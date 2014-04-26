@@ -1,6 +1,5 @@
 var d3 = d3;
 
-// start slingin' some d3 here.
 
 var gameOptions = {
   height: 450,
@@ -17,20 +16,23 @@ var gameStats = {
 
 var lastCollision = 0;
 
+// add an svg to the screen
 var svg = d3.select('.container').append('svg:svg')
   .attr('margin', '0 auto')
   .attr('width', gameOptions.width)
   .attr('height', gameOptions.height);
 
-
+// instantiate game lists
 var enemyList = [];
 var playerList = [];
 var scoreList = [];
 
+// findRandomPosition returns an object with cx and cy properties
+// cx and cy are randomly generated based on gameOptions
 var findRandomPosition = function(){
   var coords = {};
-  coords.cx = Math.floor(Math.random() * 600) + 50;
-  coords.cy = Math.floor(Math.random() * 350) + 50;
+  coords.cx = Math.floor(Math.random() * (gameOptions.width - 100)) + 50;
+  coords.cy = Math.floor(Math.random() * (gameOptions.height - 100)) + 50;
   return coords;
 };
 
