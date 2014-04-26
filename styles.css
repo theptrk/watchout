@@ -1,5 +1,20 @@
 /* your beautiful css styling goes here! */
 
-/* Note: an asteroid image is included in this repo. 
+/* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
+.container {
+  background-color: #5ABDFF;
+  height: 500px;
+  width: 700px;
+  padding: 20px 50px;
+}
+
+svg {
+  background-color: #FFF;
+  margin: 0 auto;
+}
+
+.player {
+  cursor: pointer;
+}
