@@ -5,14 +5,17 @@ var d3 = d3;
 var gameOptions = {
   height: 450,
   width: 700,
-  nEnemies: 20,
+  nEnemies: 100,
   padding: 20
 };
 
 var gameStats = {
   score: 0,
-  bestScore: 0
-}
+  bestScore: 0,
+  collisions: 0
+};
+
+var lastCollision = 0;
 
 var svg = d3.select('.container').append('svg:svg')
   .attr('margin', '0 auto')
@@ -91,6 +94,40 @@ scoreList.push(gameStats);
 
 // };
 // playerInit(playerArr);
+//
+
+var tweenWithCollisionDetection = function(enemyData){
+
+  var enemy = d3.select(this);
+
+  var newX = enemyData.cx
+  var oldX = parseFloat(enemy.attr('cx'));
+  var newY = enemyData.cy
+  var oldY = parseFloat(enemy.attr('cy'));
+
+  return function (t) {
+    // Alternative:
+    // use getAttribute if you want a constant coordinate
+    // console.log(this.getAttribute('cx'))
+
+    var pathX = oldX + (newX - oldX) * t;
+    var pathY = oldY + (newY - oldY) * t;
+
+    var player = playerList[0]
+    var diffX = pathX - player.cx;
+    var diffY = pathY - player.cy;
+
+    if (Math.sqrt(diffX * diffX + diffY * diffY) < (enemyData.r + player.r)) {
+      console.log('collision!!!', pathX, player.cx);
+      var rightNow = Date.now();
+      if (rightNow - lastCollision > 1000){
+        lastCollision = Date.now();
+        gameStats.collisions += 1;
+        updateScore(scoreList);
+      }
+    }
+  };
+};
 
 var update = function(updateData) {
 
@@ -105,6 +142,7 @@ var update = function(updateData) {
       .attr('cx', function(d){ return d.cx ;})
       .attr('cy', function(d){ return d.cy ;})
       .style("fill", "black")
+      .tween('custom', tweenWithCollisionDetection);
   // enter
   // create new elements
   enemyNodes.enter().append('circle')
@@ -137,8 +175,10 @@ var updatePlayer = function(updateData) {
     .attr('r', function(d){return d.r; })
     .attr('stroke', function(d){return d.stroke; })
     .attr('stroke-width', function(d){return d['stroke-width']; })
-    .call(drag);
+    .call(drag)
 
+  // playerNodes.transition()
+  //   .tween('custom', playerTweenWithCollisionDetection);
 };
 
 var updateScore = function(scoreData) {
@@ -164,6 +204,16 @@ var updateScore = function(scoreData) {
 
   bestScoreText.enter().append('text')
     .text(function(d){ return d.bestScore ;});
+
+    // data join
+  var collisionsText = d3.select('.collisions').selectAll('text')
+    .data(scoreData, function(d, i) { return d;});
+  // update
+  collisionsText
+    .text(function(d){ return d.collisions ;});
+
+  collisionsText.enter().append('text')
+    .text(function(d){ return d.collisions ;});
 };
 
 
