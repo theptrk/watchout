@@ -1,10 +1,9 @@
-var d3 = d3;
-
+var d3 = d3
 
 var gameOptions = {
   height: 450,
   width: 700,
-  nEnemies: 100,
+  nEnemies: 20,
   padding: 20
 };
 
@@ -36,6 +35,7 @@ var findRandomPosition = function(){
   return coords;
 };
 
+// functional instantiator of Enemies
 var createEnemy = function(){
   var newEnemy = findRandomPosition(); // this returns an obj {cx: #, cy: #}
   newEnemy.r = 7;
@@ -54,49 +54,15 @@ var createPlayer = function () {
   newPlayer.fill = 'blue';
   return newPlayer;
 };
-  // var player = {
-  //   cx: 400,
-  //   cy: 400,
-  //   r: 7,
-  //   stroke: 'black',
-  //   'stroke-width': 1,
-  //   fill: 'blue'
-  // };
 
 // populates enemyList with the correct number of enemies
 for (var i = 0; i < gameOptions.nEnemies; i ++) {
   enemyList.push(createEnemy());
 }
+
 // populate playerList with the one player
 playerList.push(createPlayer());
 scoreList.push(gameStats);
-
-// create the player
-// svg.selectAll('.player')
-//   .data(player)
-//   .append('circle')
-//   .attr('class', 'player');
-
-// var playerInit = function(playerData) {
-
-//   // data join
-//   var player = svg.selectAll('.player')
-//     .data(playerData);
-
-//   // enter
-//   // create new elements
-//   player.enter().append('circle')
-//     .attr('class', 'player')
-//     // .attr('cx', function(d){ return d.cx; })
-//     // .attr('cy', function(d){ return d.cy; })
-//     // .attr('fill', function(d){ return d.fill; })
-//     // .attr('r', function(d){return d.r; })
-//     // .attr('stroke', function(d){return d.stroke; })
-//     // .attr('stroke-width', function(d){return d['stroke-width']; });
-
-// };
-// playerInit(playerArr);
-//
 
 var tweenWithCollisionDetection = function(enemyData){
 
@@ -178,9 +144,6 @@ var updatePlayer = function(updateData) {
     .attr('stroke', function(d){return d.stroke; })
     .attr('stroke-width', function(d){return d['stroke-width']; })
     .call(drag)
-
-  // playerNodes.transition()
-  //   .tween('custom', playerTweenWithCollisionDetection);
 };
 
 var updateScore = function(scoreData) {
@@ -233,15 +196,6 @@ var dragmove = function(d) {
 var drag = d3.behavior.drag()
     .on('drag', dragmove);
 
-
-
-
-// svg.selectAll('.player')
-//   .on("click", function() {
-//   if (d3.event.defaultPrevented) return; // click suppressed
-//   console.log("clicked!");
-// });
-
 var checkCollisions = function () {
   var player = playerList[0];
   for ( var i = 0 ; i < enemyList.length; i++) {
@@ -254,8 +208,6 @@ var checkCollisions = function () {
   }
   return false;
 };
-
-
 
 var updateEnemyInterval = setInterval(function(){
   for (var i = 0; i < enemyList.length; i++) {
