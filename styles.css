@@ -4,10 +4,15 @@
 Feel free to use it if you like. */
 
 .container {
-  background-color: #5ABDFF;
-  height: 500px;
-  width: 700px;
-  padding: 20px 50px;
+  background-color;
+  /*height: 500px;
+  width: 700px;*/
+  display:inline-block;
+}
+
+body{
+  font-size: 1.25em;
+  font-family: Helvetica, Georgia, Times;
 }
 
 svg {
@@ -17,4 +22,13 @@ svg {
 
 .player {
   cursor: pointer;
+  fill:#000;
+  fill-opacity:0;
+}
+
+.scoreboard{
+  width: 200px;
+}
+.title{
+  width: 400px;
 }

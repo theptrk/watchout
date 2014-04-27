@@ -1,6 +1,8 @@
 var gameOptions = {
-  height: 450,
-  width: 700,
+  // height: 450,
+  // width: 700,
+  height: window.innerHeight,
+  width: window.innerWidth,
   nEnemies: 20,
   padding: 20
 };
@@ -20,9 +22,8 @@ var scoreList = [];
 
 // add an svg to the screen
 var svg = d3.select('.container').append('svg:svg')
-  .attr('margin', '0 auto')
-  .attr('width', gameOptions.width)
-  .attr('height', gameOptions.height);
+  .attr('width', gameOptions.width * .93)
+  .attr('height', gameOptions.height * .75);
 
 // ------------------------- HELPER FUNCTIONS TO HELP THINGS ------------------------- //
 
@@ -45,6 +46,8 @@ var tweenWithCollisionDetection = function(enemyData){
   var newY = enemyData.cy;
   var oldY = parseFloat(enemy.attr('cy'));
 
+  var svg = d3.select('svg')
+
   return function (t) {
     // Alternative:
     // use getAttribute if you want a constant coordinate
@@ -57,6 +60,7 @@ var tweenWithCollisionDetection = function(enemyData){
     var diffX = pathX - player.cx;
     var diffY = pathY - player.cy;
 
+    // if this is true, a collision has occurred
     if (Math.sqrt(diffX * diffX + diffY * diffY) < (enemyData.r + player.r)) {
       var rightNow = Date.now();
       if (rightNow - lastCollision > 1000){
@@ -67,6 +71,8 @@ var tweenWithCollisionDetection = function(enemyData){
           gameStats.bestScore = gameStats.score;
         }
         gameStats.score = 0;
+        d3.select(".player").transition().duration(1000)
+          .style("fill-opacity", gameStats.collisions * 0.05);
       }
     }
   };
@@ -77,7 +83,7 @@ var tweenWithCollisionDetection = function(enemyData){
 // functional instantiator of Enemies
 var createEnemy = function(){
   var newEnemy = findRandomPosition(); // this returns an obj {cx: #, cy: #}
-  newEnemy.r = 7;
+  newEnemy.r = 20;
   newEnemy.stroke = 'black';
   newEnemy['stroke-width'] = 1;
   newEnemy.fill = 'black';
@@ -87,10 +93,11 @@ var createEnemy = function(){
 // create player in the center of the container
 var createPlayer = function () {
   var newPlayer = findRandomPosition(); // this returns an obj {cx: #, cy: #}
-  newPlayer.r = 7;
+  newPlayer.r = 20;
   newPlayer.stroke = 'red';
   newPlayer['stroke-width'] = 1;
-  newPlayer.fill = 'blue';
+  newPlayer.fill = 'black';
+  newPlayer.opacity = 0;
   return newPlayer;
 };
 
@@ -186,9 +193,20 @@ scoreList.push(gameStats);
 // create initial enemies on screen
 update(enemyList);
 
+var bound = function(value, min, max){
+  if (value < min) {
+    return min;
+  } else if (value > max) {
+    return max;
+  } else {
+    return value;
+  }
+};
+
 var dragmove = function(d) {
-  d.cx = d3.event.x;
-  d.cy = d3.event.y;
+  d.cx = bound(d3.event.x, 0, gameOptions.width * .93);
+  d.cy = bound(d3.event.y, 0, gameOptions.height * .75);
+  //d.cy = d3.event.y;
   d3.select(this).attr("transform", "translate(" + d.cx + "," + d.cy + ")");
 };
 
